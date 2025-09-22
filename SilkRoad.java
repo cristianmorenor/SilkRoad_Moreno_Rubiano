@@ -1,19 +1,20 @@
 import java.util.HashMap;
-import java.util.ArrayList<>;
+import java.util.ArrayList;
 
 public class SilkRoad {
     private ArrayList<Store> stores;
     private ArrayList<Robot> robots;
     private HashMap<Robot, Store> solutionAbstraction;
-    private int maxPossibleProFit
+    private int maxPossibleProfit;
     private int currentProfit;
+    private int maxPossibleProfi;
 
     /** constructor ciclo 1 */
     public SilkRoad(int lenght){
         this.stores = new ArrayList<>();
         this.robots = new ArrayList<>();
         this.solutionAbstraction = new HashMap<>();
-        this.maxPossibleProFit = lenght * 100;
+        this.maxPossibleProfit = lenght * 100;
         this.currentProfit = 0;
     }
     /** constructor ciclo 2 */
@@ -21,7 +22,7 @@ public class SilkRoad {
         this.stores = new ArrayList<>();
         this.robots = new ArrayList<>();
         this.solutionAbstraction = new HashMap<>();
-        this.maxPossibleProFit = days.length * 100;
+        this.maxPossibleProft = days.length * 100;
         this.currentProfit = 0;
     }
     /**
@@ -76,12 +77,49 @@ public class SilkRoad {
 
     }
 
-    public void moveRobot(int Location, int meters){
-        for( Robot r: robots){
-            this.robots.moveTo();
-
+    private Robot findRobotAtLocation(int location) {
+    for (Robot robot : this.robots) {
+        if (robot.isAtLocation(location)) {
+            return robot;
         }
-    }Ñ
+    }
+    return null;
+    }
 
+    public void moveRobot(int location, int meters) {
+        if (meters <= 0) {
+            return;
+        }
+
+        Robot robot = findRobotAtLocation(location);
+        if (robot == null) {
+            return;
+        }
+    
+        int newPosition = location + meters;
+        robot.moveTo(newPosition);
+    }
+    
+    public void resupplyStores() {
+        for (Store store : this.stores) {
+            store.resupply();
+        }
+
+        if (isVisible()) {
+            updateStoresVisual();
+        }
+    }
+
+    public void returnRobots() {
+    for (Robot robot : this.robots) {
+        robot.returnToInitialPosition();
+    }
+    
+    if (isVisible()) {
+        updateRobotsVisual();
+    }
+}
 
 }
+
+
