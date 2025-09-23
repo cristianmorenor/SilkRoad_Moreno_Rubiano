@@ -2,8 +2,10 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class SilkRoad {
+    private final int length;  
     private Rectangle road;
     private ArrayList<Store> stores;
+    private final SpiralPath path;
     private ArrayList<Robot> robots;
     private HashMap<Robot, Store> solutionAbstraction;
     private int maxPossibleProfit;
@@ -15,8 +17,10 @@ public class SilkRoad {
     public SilkRoad(int lenght){
         this.stores = new ArrayList<>();
         this.robots = new ArrayList<>();
+        this.path = new SpiralPath(length);
         this.maxPossibleProfit = lenght * 100;
         this.currentProfit = 0;
+        this.progress = new ProgressBar();
     }
     /** constructor ciclo 2 */
     public SilkRoad(int[][] days){
@@ -25,6 +29,23 @@ public class SilkRoad {
         this.solutionAbstraction = new HashMap<>();
         this.maxPossibleProft = days.length * 100;
         this.currentProfit = 0;
+    }
+
+    public void makeVisible() {
+        visible = true;
+        path.makeVisible();
+        for (Store s : stores) s.makeVisible();
+        for (Robot r : robots) r.makeVisible();
+        progress.makeVisible();
+        
+        updateProgress();
+    }
+     public void makeInvisible() {
+        visible = false;
+        for (Robot r : robots) r.makeInvisible();
+        for (Store s : stores) s.makeInvisible();
+        path.makeInvisible();
+        progress.makeInvisible();
     }
     /**
      * El metodo placeStore lo que hace es crear una nueva tienda con la posicion y los tenges iniciales
@@ -77,6 +98,15 @@ public class SilkRoad {
         }
 
     }
+    public void resetRoad() {
+        resetRobots();
+        resupplyStores();    
+    }
+
+     public String getInfo() {
+        return "SilkRoad{length=" + length + ", stores=" + stores.size() + ", robots=" + robots.size() + "}";
+    }
+
 
     private Robot findRobotAtLocation(int location) {
     for (Robot robot : this.robots) {
@@ -120,6 +150,24 @@ public class SilkRoad {
         updateRobotsVisual();
     }
 }
+    public int getProfit() { 
+        return currentProfit; 
+    
+    }
+    private void updateProgress() {
+        int max = maxPossible();
+        double ratio = (max == 0) ? 1.0 : (double) currentProfit / (currentProfit + max);
+        // La barra muestra lo ya obtenido sobre (obtenido + disponible) → 1 cuando no queda nada por obtener
+        progress.setRatio(ratio);
+        if (visible && !progress.isVisible()) progress.makeVisible();
+    }
+
+
+    public void finish() {
+        makeInvisible();
+        stores.clear();
+        robots.clear();
+    }
 
 }
 
